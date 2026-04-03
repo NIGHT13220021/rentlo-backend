@@ -1,19 +1,16 @@
 const { createClient } = require('@supabase/supabase-js');
 
-// Get env variables
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
+const supabaseUrl  = process.env.SUPABASE_URL;
+const supabaseKey  = process.env.SUPABASE_SERVICE_KEY;
 
-// Safety check
-if (!supabaseUrl || !supabaseServiceKey) {
+if (!supabaseUrl || !supabaseKey) {
   throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_KEY');
 }
 
-// Create Supabase client (backend)
-const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
     autoRefreshToken: false,
-    persistSession: false,
+    persistSession:   false,
   },
 });
 
