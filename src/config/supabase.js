@@ -1,17 +1,25 @@
 const { createClient } = require('@supabase/supabase-js');
 
-const supabaseUrl  = process.env.SUPABASE_URL;
-const supabaseKey  = process.env.SUPABASE_SERVICE_KEY;
+let supabase = null;
 
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_KEY');
-}
+const getSupabase = () => {
+  if (supabase) return supabase;
 
-const supabase = createClient(supabaseUrl, supabaseKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession:   false,
-  },
-});
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
 
-module.exports = supabase;
+  if (!url || !key) {
+    throw new Error(`Missing env vars - URL: ${url ? 'OK' : 'MISSING'}, KEY: ${key ? 'OK' : 'MISSING'}`);
+  }
+
+  supabase = createClient(url, key, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+
+  return supabase;
+};
+
+module.exports = getSupabase();
