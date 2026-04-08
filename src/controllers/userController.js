@@ -48,9 +48,30 @@ exports.upsertProfile = async (req, res) => {
   return ok(res, data);
 };
 
+// PATCH /users/me/location
+exports.updateLocation = async (req, res) => {
+  const { city, latitude, longitude } = req.body;
+  if (!city && !latitude) return fail(res, 'city or coordinates required');
+
+  const updates = { location_updated_at: new Date().toISOString() };
+  if (city)      updates.city      = city;
+  if (latitude)  updates.latitude  = Number(latitude);
+  if (longitude) updates.longitude = Number(longitude);
+
+  const { data, error } = await supabase
+    .from('users')
+    .update(updates)
+    .eq('id', req.user.id)
+    .select()
+    .single();
+
+  if (error) return fail(res, error.message);
+  return ok(res, data, 'Location updated');
+};
+
 // PATCH /users/me
 exports.updateMe = async (req, res) => {
-  const allowed = ['name', 'phone', 'bio', 'city', 'avatar_url', 'role'];
+  const allowed = ['name', 'phone', 'bio', 'city', 'avatar_url', 'role', 'latitude', 'longitude'];
   const updates = {};
   allowed.forEach((k) => { if (req.body[k] !== undefined) updates[k] = req.body[k]; });
 

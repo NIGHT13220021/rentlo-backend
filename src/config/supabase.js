@@ -22,4 +22,4 @@ const getSupabase = () => {
   return supabase;
 };
 
-module.exports = getSupabase();
+module.exports = { supabase: getSupabase() };
